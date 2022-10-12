@@ -15,17 +15,14 @@ describe("GET catergories /api/categories", () => {
       .get("/api/categories")
       .expect(200)
       .then(({ categories: body }) => {
-        console.log(categories);
-        expect(
-          categories.forEach((category) => {
-            expect(category).toEqual(
-              expect.objectContaining({
-                slug: expect.any(String),
-                description: expect.any(String),
-              })
-            );
-          })
-        );
+        categories.forEach((category) => {
+          expect(category).toEqual(
+            expect.objectContaining({
+              slug: expect.any(String),
+              description: expect.any(String),
+            })
+          );
+        });
       });
   });
   test("should 404, should return err when passed invalid path", () => {
@@ -35,15 +32,5 @@ describe("GET catergories /api/categories", () => {
       .then(({ body }) => {
         expect(body).toEqual({});
       });
-    // .then(({ body }) => {
-    //   console.log(body);
-    //   expect(err).toEqual(
-    //     expect({
-    //       err: expect.any(String),
-    //     })
-    //   );
-    // });
-    // NOTE
-    // very confused
   });
 });
