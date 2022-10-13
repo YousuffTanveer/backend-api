@@ -10,7 +10,7 @@ beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
 describe("GET catergories /api/categories", () => {
-  test("should 200, should return an array of objects", () => {
+  test("should 200, should return an array of objects with a slug and description key", () => {
     return request(app)
       .get("/api/categories")
       .expect(200)
@@ -30,7 +30,59 @@ describe("GET catergories /api/categories", () => {
       .get("/api/xxx")
       .expect(404)
       .then(({ body }) => {
-        expect(body).toEqual({});
+        expect(body.msg).toBe("invalid endpoint");
+      });
+  });
+});
+
+describe("GET /api/reviews/:review_id", () => {
+  test("Should respond with only the comments that match the id", () => {
+    return request(app)
+      .get("/api/reviews/1")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          review: {
+            title: "Agricola",
+            designer: "Uwe Rosenberg",
+            owner: "mallionaire",
+            review_img_url:
+              "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+            review_body: "Farmyard fun!",
+            category: "euro game",
+            created_at: "2021-01-18T10:00:20.514Z",
+            votes: 1,
+            review_id: 1,
+          },
+        });
+      });
+  });
+  test("Should return correct key types of object", () => {
+    return request(app)
+      .get("/api/reviews/3")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.review).toEqual(
+          expect.objectContaining({
+            title: expect.any(String),
+            designer: expect.any(String),
+            owner: expect.any(String),
+            review_id: expect.any(Number),
+            review_img_url: expect.any(String),
+            review_body: expect.any(String),
+            category: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+          })
+        );
+      });
+  });
+  test("Should return review not found if id not valid", () => {
+    return request(app)
+      .get("/api/reviews/9999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Review not found");
       });
   });
 });
