@@ -106,3 +106,80 @@ describe("GET /api/users", () => {
       });
   });
 });
+
+describe("PATCH /api/review/:review_id ", () => {
+  test("Status 200: Should respond with an object of the updates review and status 200", () => {
+    return request(app)
+      .patch("/api/reviews/2")
+      .send({ votes: 100 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          updatedReview: {
+            title: "Jenga",
+            designer: "Leslie Scott",
+            owner: "philippaclaire9",
+            review_img_url:
+              "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+            review_body: "Fiddly fun for all the family",
+            category: "dexterity",
+            created_at: "2021-01-18T10:01:41.251Z",
+            votes: 105,
+            review_id: 2,
+          },
+        });
+      });
+  });
+  test("Status 200: Should respond with an object of the updates review and status 200", () => {
+    return request(app)
+      .patch("/api/reviews/2")
+      .send({ votes: 100 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          updatedReview: {
+            title: "Jenga",
+            designer: "Leslie Scott",
+            owner: "philippaclaire9",
+            review_img_url:
+              "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+            review_body: "Fiddly fun for all the family",
+            category: "dexterity",
+            created_at: "2021-01-18T10:01:41.251Z",
+            votes: 105,
+            review_id: 2,
+          },
+        });
+      });
+  });
+  test("Status 200: Should respond with an object of the updates review checking for votes to be a negative number", () => {
+    return request(app)
+      .patch("/api/reviews/2")
+      .send({ votes: -100 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          updatedReview: {
+            title: "Jenga",
+            designer: "Leslie Scott",
+            owner: "philippaclaire9",
+            review_img_url:
+              "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+            review_body: "Fiddly fun for all the family",
+            category: "dexterity",
+            created_at: "2021-01-18T10:01:41.251Z",
+            votes: -95,
+            review_id: 2,
+          },
+        });
+      });
+  });
+  test("Should return review not found if id not valid", () => {
+    return request(app)
+      .patch("/api/reviews/9999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Review not found");
+      });
+  });
+});
