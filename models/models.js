@@ -19,3 +19,11 @@ exports.selectReviewById = (review_id) => {
       return rows[0];
     });
 };
+
+exports.selectUsers = () => {
+  let baseQuery = `SELECT * FROM users`;
+
+  return db.query(baseQuery).then(({ rows }) => {
+    return rows;
+  });
+};
