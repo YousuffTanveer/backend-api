@@ -39,21 +39,22 @@ describe("GET catergories /api/categories", () => {
 describe("GET /api/reviews/:review_id", () => {
   test("Should respond with only the comments that match the id", () => {
     return request(app)
-      .get("/api/reviews/1")
+      .get("/api/reviews/2")
       .expect(200)
       .then(({ body }) => {
         expect(body).toEqual({
           review: {
-            title: "Agricola",
-            designer: "Uwe Rosenberg",
-            owner: "mallionaire",
+            title: "Jenga",
+            designer: "Leslie Scott",
+            owner: "philippaclaire9",
             review_img_url:
               "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
-            review_body: "Farmyard fun!",
-            category: "euro game",
-            created_at: "2021-01-18T10:00:20.514Z",
-            votes: 1,
-            review_id: 1,
+            review_body: "Fiddly fun for all the family",
+            category: "dexterity",
+            created_at: "2021-01-18T10:01:41.251Z",
+            votes: 5,
+            comment_count: "3",
+            review_id: 2,
           },
         });
       });
@@ -74,6 +75,7 @@ describe("GET /api/reviews/:review_id", () => {
             category: expect.any(String),
             created_at: expect.any(String),
             votes: expect.any(Number),
+            comment_count: expect.any(String),
           })
         );
       });
@@ -180,6 +182,14 @@ describe("PATCH /api/review/:review_id ", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Review not found");
+      });
+  });
+  test("status 400, Should return id not valid if passed incorrect value type", () => {
+    return request(app)
+      .patch("/api/reviews/potato")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not a valid id");
       });
   });
 });
