@@ -4,6 +4,7 @@ const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data/index");
 const categories = require("../db/data/test-data/categories");
+const users = require("../db/data/test-data/users");
 
 beforeEach(() => seed(testData));
 
@@ -83,6 +84,25 @@ describe("GET /api/reviews/:review_id", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Review not found");
+      });
+  });
+});
+
+describe("GET /api/users", () => {
+  test("should return 200, an array of objects with username name and avatar_url properties", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ users: body }) => {
+        users.forEach((users) => {
+          expect(users).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            })
+          );
+        });
       });
   });
 });
