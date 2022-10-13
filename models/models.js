@@ -23,19 +23,25 @@ exports.selectUsers = () => {
   let baseQuery = `SELECT * FROM users`;
 
   return db.query(baseQuery).then(({ rows }) => {
+    if (rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "Review not found" });
+    }
     return rows;
   });
 };
 
 exports.updateReviewById = (review_id, votes) => {
-  console.log("here");
+  if (isNaN(review_id)) {
+    return Promise.reject({ status: 400, msg: "Not a valid id" });
+  }
+
   return db
     .query(
       "UPDATE reviews SET votes = (votes + $1) WHERE review_id = $2 RETURNING*",
       [votes, review_id]
     )
     .then(({ rows }) => {
-      console.log("rows;", rows);
+      //console.log("rows;", rows);
       if (rows.length == 0) {
         return Promise.reject({ status: 404, msg: "Review not found" });
       } else {
