@@ -3,6 +3,7 @@ const {
   getCategories,
   getReviewById,
   getUsers,
+  patchReviewById,
 } = require("./controller/controller");
 const {
   handleInternalErrors,
@@ -17,12 +18,13 @@ app.get("/api/categories", getCategories);
 app.get("/api/reviews/:review_id", getReviewById);
 app.get("/api/users", getUsers);
 
-app.use(handleCustomErrors);
-
-app.use(handleInternalErrors);
+app.patch("/api/reviews/:review_id", patchReviewById);
 
 app.all("/*", (req, res) => {
   res.status(404).send({ msg: "invalid endpoint" });
 });
 
+app.use(handleCustomErrors);
+
+app.use(handleInternalErrors);
 module.exports = app;
