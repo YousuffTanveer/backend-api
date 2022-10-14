@@ -3,6 +3,7 @@ const {
   selectReviewById,
   selectUsers,
   updateReviewById,
+  selectReviews,
 } = require("../models/models");
 
 exports.getCategories = (req, res, next) => {
@@ -37,6 +38,16 @@ exports.patchReviewById = (req, res, next) => {
   updateReviewById(review_id, votes)
     .then((updatedReview) => {
       res.status(200).send({ updatedReview });
+    })
+    .catch(next);
+};
+
+exports.getReviews = (req, res, next) => {
+  const { category } = req.query;
+  selectReviews(category)
+    .then((reviews) => {
+      console.log(reviews);
+      res.status(200).send({ reviews });
     })
     .catch(next);
 };

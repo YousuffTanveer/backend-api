@@ -37,7 +37,7 @@ describe("GET catergories /api/categories", () => {
 });
 
 describe("GET /api/reviews/:review_id", () => {
-  test("Should respond with only the comments that match the id", () => {
+  test("status200, Should respond with only the comments that match the id", () => {
     return request(app)
       .get("/api/reviews/2")
       .expect(200)
@@ -59,7 +59,7 @@ describe("GET /api/reviews/:review_id", () => {
         });
       });
   });
-  test("Should return correct key types of object", () => {
+  test("status 200, Should return correct key types of object", () => {
     return request(app)
       .get("/api/reviews/3")
       .expect(200)
@@ -80,7 +80,7 @@ describe("GET /api/reviews/:review_id", () => {
         );
       });
   });
-  test("Should return review not found if id not valid", () => {
+  test("status 404, Should return review not found if id not valid", () => {
     return request(app)
       .get("/api/reviews/9999")
       .expect(404)
@@ -176,7 +176,7 @@ describe("PATCH /api/review/:review_id ", () => {
         });
       });
   });
-  test("Should return review not found if id not valid", () => {
+  test("status 404, Should return review not found if id not valid", () => {
     return request(app)
       .patch("/api/reviews/9999")
       .expect(404)
@@ -190,6 +190,65 @@ describe("PATCH /api/review/:review_id ", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Not a valid id");
+      });
+  });
+});
+
+describe("status 200, GET /api/reviews", () => {
+  test("Status 200 return an array of reviews", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body: { reviews } }) => {
+        reviews.forEach((reviews) => {
+          expect(reviews).toEqual(
+            expect.objectContaining({
+              title: expect.any(String),
+              category: expect.any(String),
+              designer: expect.any(String),
+              owner: expect.any(String),
+              review_body: expect.any(String),
+              review_id: expect.any(Number),
+              review_img_url: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(String),
+            })
+          );
+        });
+        expect(reviews.length).toBe(13);
+      });
+  });
+  test("status 200, GET /api/reviews/query returns an array of reviews of specific category", () => {
+    return request(app)
+      .get("/api/reviews?category=dexterity")
+      .expect(200)
+      .then(({ body: { reviews } }) => {
+        reviews.forEach((reviews) => {
+          expect(reviews).toEqual(
+            expect.objectContaining({
+              title: expect.any(String),
+              category: "dexterity",
+              designer: expect.any(String),
+              owner: expect.any(String),
+              review_body: expect.any(String),
+              review_id: expect.any(Number),
+              review_img_url: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(String),
+            })
+          );
+        });
+        expect(reviews.length).toBe(1);
+      });
+  });
+  test("should return 400, when category does not exist", () => {
+    return request(app)
+      .get("/api/reviews?category=invalidQuery")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Review not found");
       });
   });
 });
