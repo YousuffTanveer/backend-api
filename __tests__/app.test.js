@@ -199,10 +199,9 @@ describe("status 200, GET /api/reviews", () => {
     return request(app)
       .get("/api/reviews")
       .expect(200)
-      .then(({ body: { category } }) => {
-        console.log("---", category);
-        category.forEach((category) => {
-          expect(category).toEqual(
+      .then(({ body: { reviews } }) => {
+        reviews.forEach((reviews) => {
+          expect(reviews).toEqual(
             expect.objectContaining({
               title: expect.any(String),
               category: expect.any(String),
@@ -217,16 +216,16 @@ describe("status 200, GET /api/reviews", () => {
             })
           );
         });
-        expect(category.length).toBe(13);
+        expect(reviews.length).toBe(13);
       });
   });
   test("status 200, GET /api/reviews/query returns an array of reviews of specific category", () => {
     return request(app)
       .get("/api/reviews?category=dexterity")
       .expect(200)
-      .then(({ body: { category } }) => {
-        category.forEach((category) => {
-          expect(category).toEqual(
+      .then(({ body: { reviews } }) => {
+        reviews.forEach((reviews) => {
+          expect(reviews).toEqual(
             expect.objectContaining({
               title: expect.any(String),
               category: expect.any(String),
@@ -241,7 +240,15 @@ describe("status 200, GET /api/reviews", () => {
             })
           );
         });
-        expect(category.length).toBe(1);
+        expect(reviews.length).toBe(1);
+      });
+  });
+  test("should return 400, when category does not exist", () => {
+    return request(app)
+      .get("/api/reviews?category=invalidQuery")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Review not found");
       });
   });
 });

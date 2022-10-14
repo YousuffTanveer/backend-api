@@ -72,7 +72,9 @@ exports.selectReviews = (category) => {
   queryStr += " GROUP BY reviews.review_id ORDER BY created_at DESC";
 
   return db.query(queryStr, queryValues).then(({ rows }) => {
-    console.log(rows);
+    if (rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "Review not found" });
+    }
     return rows;
   });
 };
