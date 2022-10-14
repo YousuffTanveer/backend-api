@@ -228,7 +228,7 @@ describe("status 200, GET /api/reviews", () => {
           expect(reviews).toEqual(
             expect.objectContaining({
               title: expect.any(String),
-              category: expect.any(String),
+              category: "dexterity",
               designer: expect.any(String),
               owner: expect.any(String),
               review_body: expect.any(String),
