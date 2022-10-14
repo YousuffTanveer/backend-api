@@ -4,6 +4,7 @@ const {
   getReviewById,
   getUsers,
   patchReviewById,
+  getReviews,
 } = require("./controller/controller");
 const {
   handleInternalErrors,
@@ -17,6 +18,7 @@ app.use(express.json());
 app.get("/api/categories", getCategories);
 app.get("/api/reviews/:review_id", getReviewById);
 app.get("/api/users", getUsers);
+app.get("/api/reviews", getReviews);
 
 app.patch("/api/reviews/:review_id", patchReviewById);
 

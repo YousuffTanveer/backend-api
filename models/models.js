@@ -1,3 +1,4 @@
+const { query } = require("../db/connection");
 const db = require("../db/connection");
 
 exports.selectCategories = () => {
@@ -56,4 +57,22 @@ exports.updateReviewById = (review_id, votes) => {
         return rows[0];
       }
     });
+};
+
+exports.selectReviews = (category) => {
+  let queryStr =
+    "SELECT reviews.*, COUNT(comments.comment_id) AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id ";
+  let queryValues = [];
+
+  if (category) {
+    queryStr += " WHERE category = $1";
+    queryValues.push(category);
+  }
+
+  queryStr += " GROUP BY reviews.review_id ORDER BY created_at DESC";
+
+  return db.query(queryStr, queryValues).then(({ rows }) => {
+    console.log(rows);
+    return rows;
+  });
 };
