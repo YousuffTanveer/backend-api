@@ -29,4 +29,5 @@ app.all("/*", (req, res) => {
 app.use(handleCustomErrors);
 
 app.use(handleInternalErrors);
+
 module.exports = app;
