@@ -9,22 +9,41 @@ exports.selectCategories = () => {
   });
 };
 
-exports.selectReviewById = (review_id) => {
+// exports.selectReviewById = (review_id) => {
+//   return db
+//     .query(
+//       `SELECT reviews.*,
+//       COUNT(comments.comment_id) AS comment_count
+//       FROM reviews
+//       LEFT JOIN comments ON comments.review_id = reviews.review_id
+//       WHERE reviews.review_id = $1
+//       GROUP BY reviews.review_id;`,
+//       [review_id]
+//     )
+//     .then(({ rows }) => {
+//       if (rows.length === 0) {
+//         return Promise.reject({ status: 404, msg: "Review not found" });
+//       }
+
+//       return rows[0];
+//     });
+// };
+
+exports.selectReviewById = (reviewId) => {
   return db
     .query(
-      `SELECT reviews.*,
-      COUNT(comments.comment_id) AS comment_count
+      `SELECT reviews.*, count(comments.comment_id) AS comment_count
       FROM reviews
-      LEFT JOIN comments ON comments.review_id = reviews.review_id
-      WHERE reviews.review_id = $1 
+      LEFT JOIN comments ON reviews.review_id = comments.review_id
+      WHERE reviews.review_id = $1
       GROUP BY reviews.review_id;`,
-      [review_id]
+      [reviewId]
     )
     .then(({ rows }) => {
       if (rows.length === 0) {
         return Promise.reject({ status: 404, msg: "Review not found" });
       }
-
+      console.log(rows);
       return rows[0];
     });
 };
@@ -77,4 +96,13 @@ exports.selectReviews = (category) => {
     }
     return rows;
   });
+};
+
+exports.selectComments = (reviewId) => {
+  console.log("hello");
+  return db
+    .query("SELECT * FROM COMMENTS WHERE review_id=$1", [reviewId])
+    .then(({ rows }) => {
+      return rows;
+    });
 };
